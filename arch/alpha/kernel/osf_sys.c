@@ -1013,6 +1013,7 @@ SYSCALL_DEFINE2(osf_gettimeofday, struct timeval32 __user *, tv,
 SYSCALL_DEFINE2(osf_settimeofday, struct timeval32 __user *, tv,
 		struct timezone __user *, tz)
 {
+	struct timespec64 kts64;
 	struct timespec kts;
 	struct timezone ktz;
 
@@ -1020,13 +1021,14 @@ SYSCALL_DEFINE2(osf_settimeofday, struct timeval32 __user *, tv,
 		if (get_tv32((struct timeval *)&kts, tv))
 			return -EFAULT;
 		kts.tv_nsec *= 1000;
+		kts64 = timespec_to_timespec64(kts);
 	}
 	if (tz) {
 		if (copy_from_user(&ktz, tz, sizeof(*tz)))
 			return -EFAULT;
 	}
 
-	return do_sys_settimeofday(tv ? &kts : NULL, tz ? &ktz : NULL);
+	return do_sys_settimeofday64(tv ? &kts64 : NULL, tz ? &ktz : NULL);
 }
 
 SYSCALL_DEFINE2(osf_getitimer, int, which, struct itimerval32 __user *, it)
