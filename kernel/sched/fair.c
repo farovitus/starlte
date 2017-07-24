@@ -5787,10 +5787,8 @@ end:
  */
 static int sched_group_energy(struct energy_env *eenv)
 {
-	struct sched_domain *sd;
-	int cpu, total_energy = 0;
 	struct cpumask visit_cpus;
-	struct sched_group *sg;
+	u64 total_energy = 0;
 	int cpu_count;
 
 	WARN_ON(!eenv->sg_top->sge);
@@ -5810,8 +5808,8 @@ static int sched_group_energy(struct energy_env *eenv)
 
 	while (!cpumask_empty(&visit_cpus)) {
 		struct sched_group *sg_shared_cap = NULL;
-
-		cpu = cpumask_first(&visit_cpus);
+		int cpu = cpumask_first(&visit_cpus);
+		struct sched_domain *sd;
 
 		/*
 		 * Is the group utilization affected by cpus outside this
@@ -5825,7 +5823,7 @@ static int sched_group_energy(struct energy_env *eenv)
 			sg_shared_cap = sd->parent->groups;
 
 		for_each_domain(cpu, sd) {
-			sg = sd->groups;
+			struct sched_group *sg = sd->groups;
 
 			/* Has this sched_domain already been visited? */
 			if (sd->child && group_first_cpu(sg) != cpu)
@@ -5861,11 +5859,9 @@ static int sched_group_energy(struct energy_env *eenv)
 				idle_idx = group_idle_state(eenv, sg);
 				group_util = group_norm_util(eenv, sg);
 
-				sg_busy_energy = (group_util * sg->sge->cap_states[cap_idx].power)
-								>> SCHED_CAPACITY_SHIFT;
+				sg_busy_energy = (group_util * sg->sge->cap_states[cap_idx].power);
 				sg_idle_energy = ((SCHED_CAPACITY_SCALE-group_util)
-								* sg->sge->idle_states[idle_idx].power)
-								>> SCHED_CAPACITY_SHIFT;
+								* sg->sge->idle_states[idle_idx].power);
 
 				total_energy += sg_busy_energy + sg_idle_energy;
 
@@ -5909,7 +5905,7 @@ next_cpu:
 		continue;
 	}
 
-	eenv->energy = total_energy;
+	eenv->energy = total_energy >> SCHED_CAPACITY_SHIFT;
 	return 0;
 }
 
@@ -6844,7 +6840,7 @@ done:
 
 	return target;
 }
- 
+
 /*
  * cpu_util_wake: Compute cpu utilization with any contributions from
  * the waking task p removed.
@@ -7204,7 +7200,7 @@ static inline int find_best_target(struct task_struct *p, int *backup_cpu,
 /*
  * Disable WAKE_AFFINE in the case where task @p doesn't fit in the
  * capacity of either the waking CPU @cpu or the previous CPU @prev_cpu.
- * 
+ *
  * In that case WAKE_AFFINE doesn't make sense and we'll let
  * BALANCE_WAKE sort things out.
  */
@@ -7294,7 +7290,7 @@ static int select_energy_cpu_brute(struct task_struct *p, int prev_cpu, int sync
 			target_cpu = tmp_backup;
 			eenv.dst_cpu = target_cpu;
 			eenv.trg_cpu = target_cpu;
-			if (tmp_backup < 0 || 
+			if (tmp_backup < 0 ||
 			    tmp_backup == prev_cpu ||
 			    energy_diff(&eenv) >= 0) {
 				schedstat_inc(p->se.statistics.nr_wakeups_secb_no_nrg_sav);
