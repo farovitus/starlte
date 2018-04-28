@@ -769,7 +769,7 @@ typedef struct wl_if_event_info {
 #ifdef SUPPORT_AP_RADIO_PWRSAVE
 typedef struct ap_rps_info {
 	bool enable;
-	bool sta_assoc_check;
+	int sta_assoc_check;
 	int pps;
 	int quiet_time;
 	int level;
