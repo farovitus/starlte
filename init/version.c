@@ -49,5 +49,5 @@ const char linux_banner[] =
 
 const char linux_proc_banner[] =
 	"%s version %s"
-	" (NK9810-V100-FAROVITUS)"
+	" (NK9810-V101-FAROVITUS)"
 	" (" LINUX_COMPILER ") %s\n";
