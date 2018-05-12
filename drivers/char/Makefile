@@ -62,5 +62,3 @@ obj-$(CONFIG_MST_LDO)		+= mst_ctrl.o
 obj-$(CONFIG_TILE_SROM)		+= tile-srom.o
 obj-$(CONFIG_XILLYBUS)		+= xillybus/
 obj-$(CONFIG_POWERNV_OP_PANEL)	+= powernv-op-panel.o
-
-obj-$(CONFIG_KNOX_KAP)		+= knox_kap.o
