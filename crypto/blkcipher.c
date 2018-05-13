@@ -105,11 +105,6 @@ int blkcipher_walk_done(struct blkcipher_desc *desc,
 {
 	unsigned int nbytes = 0;
 
-#ifdef CONFIG_CRYPTO_FIPS
-	if (unlikely(in_fips_err()))
-		return (-EACCES);
-#endif
-
 	if (likely(err >= 0)) {
 		unsigned int n = walk->nbytes - err;
 
@@ -328,11 +323,6 @@ EXPORT_SYMBOL_GPL(blkcipher_walk_phys);
 static int blkcipher_walk_first(struct blkcipher_desc *desc,
 				struct blkcipher_walk *walk)
 {
-#ifdef CONFIG_CRYPTO_FIPS
-	if (unlikely(in_fips_err()))
-		return (-EACCES);
-#endif
-
 	if (WARN_ON_ONCE(in_irq()))
 		return -EDEADLK;
 
@@ -436,10 +426,6 @@ static int async_encrypt(struct ablkcipher_request *req)
 		.flags = req->base.flags,
 	};
 
-#ifdef CONFIG_CRYPTO_FIPS
-	if (unlikely(in_fips_err()))
-		return (-EACCES);
-#endif
 
 	return alg->encrypt(&desc, req->dst, req->src, req->nbytes);
 }
@@ -453,11 +439,6 @@ static int async_decrypt(struct ablkcipher_request *req)
 		.info = req->info,
 		.flags = req->base.flags,
 	};
-
-#ifdef CONFIG_CRYPTO_FIPS
-	if (unlikely(in_fips_err()))
-		return (-EACCES);
-#endif
 
 	return alg->decrypt(&desc, req->dst, req->src, req->nbytes);
 }
