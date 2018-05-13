@@ -22,10 +22,6 @@ LDFLAGS_vmlinux		+= -pie -shared -Bsymbolic \
 			$(call ld-option, --no-apply-dynamic-relocs)
 endif
 
-ifneq ($(CONFIG_RELOCATABLE_KERNEL),)
-LDFLAGS_vmlinux		+= -pie -Bsymbolic
-endif
-
 ifeq ($(CONFIG_ARM64_ERRATUM_843419),y)
   ifeq ($(call ld-option, --fix-cortex-a53-843419),)
 $(warning ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum)

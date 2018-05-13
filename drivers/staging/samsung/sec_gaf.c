@@ -229,13 +229,9 @@ static struct GAForensicINFO {
 	.file_struct_f_signature = offsetof(struct file, f_signature),
 #endif
 	.mount_struct_mnt_mountpoint = offsetof(struct mount, mnt_mountpoint),
-#ifdef CONFIG_RKP_NS_PROT
-	.vfsmount_struct_bp_mount = offsetof(struct vfsmount, bp_mount),
-#else
 	.vfsmount_struct_bp_mount =
 		(short)(offsetof(struct mount, mnt_mountpoint)
 		- offsetof(struct mount, mnt)),
-#endif
 	.GAFINFOCheckSum = 0
 };
 void sec_gaf_supply_rqinfo(unsigned short curr_offset, unsigned short rq_offset)

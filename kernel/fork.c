@@ -1451,16 +1451,6 @@ static void posix_cpu_timers_init(struct task_struct *tsk)
 	INIT_LIST_HEAD(&tsk->cpu_timers[2]);
 }
 
-#ifdef CONFIG_RKP_KDP
-void rkp_assign_pgd(struct task_struct *p)
-{
-	u64 pgd;
-	pgd = (u64)(p->mm ? p->mm->pgd :swapper_pg_dir);
-
-	uh_call(UH_APP_RKP,0x43,(u64)p->cred, (u64)pgd,0,0);
-}
-#endif /*CONFIG_RKP_KDP*/
-
 static inline void
 init_task_pid(struct task_struct *task, enum pid_type type, struct pid *pid)
 {
@@ -1891,10 +1881,7 @@ static __latent_entropy struct task_struct *copy_process(
 
 	trace_task_newtask(p, clone_flags);
 	uprobe_copy_process(p, clone_flags);
-#ifdef CONFIG_RKP_KDP
-	if(rkp_cred_enable)
-		rkp_assign_pgd(p);
-#endif/*CONFIG_RKP_KDP*/
+
 	return p;
 
 bad_fork_cancel_cgroup:

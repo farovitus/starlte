@@ -1,10 +1,6 @@
 #
 # Makefile for the kernel software RAID and LVM drivers.
 #
-ifeq ($(SEC_BUILD_CONF_DMV_ALTA),true)
-	EXTRA_CFLAGS += -DDMV_ALTA=true
-	EXTRA_CFLAGS += -DDMV_ALTA_PROF=true
-endif
 
 dm-mod-y	+= dm.o dm-table.o dm-target.o dm-linear.o dm-stripe.o \
 		   dm-ioctl.o dm-io.o dm-kcopyd.o dm-sysfs.o dm-stats.o \
@@ -25,8 +21,8 @@ md-mod-y	+= md.o bitmap.o
 raid456-y	+= raid5.o raid5-cache.o
 
 # Note: link order is important.  All raid personalities
-# and must come before md.o, as they each initialise 
-# themselves, and md.o may use the personalities when it 
+# and must come before md.o, as they each initialise
+# themselves, and md.o may use the personalities when it
 # auto-initialised.
 
 obj-$(CONFIG_MD_LINEAR)		+= linear.o
