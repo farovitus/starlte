@@ -192,7 +192,6 @@ source security/yama/Kconfig
 source security/mstdrv/Kconfig
 
 source security/integrity/Kconfig
-source security/tz_iccc/Kconfig
 
 choice
 	prompt "Default security module"
@@ -232,4 +231,3 @@ config DEFAULT_SECURITY
 	default "" if DEFAULT_SECURITY_DAC
 
 endmenu
-

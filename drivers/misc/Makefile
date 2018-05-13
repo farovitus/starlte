@@ -72,7 +72,6 @@ KCOV_INSTRUMENT_lkdtm_rodata.o	:= n
 
 # Secure OS Mobicore Interface
 obj-$(CONFIG_TRUSTONIC_TEE)	+= tzic64.o
-obj-$(CONFIG_TIMA_LOG)		+= tima_debug_log.o
 # DM-Verity
 obj-$(CONFIG_DM_VERITY)		+= dmverity_query.o
 

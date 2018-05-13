@@ -21,10 +21,6 @@
 #include <linux/reboot.h>
 
 #include <linux/ctype.h>
-#if defined(CONFIG_TZ_ICCC)
-#include <linux/smc.h>
-#define SMC_CMD_DMV_WRITE_STATUS (0x83000014)
-#endif
 
 #define DM_MSG_PREFIX			"verity"
 
@@ -258,9 +254,9 @@ static int verity_handle_err(struct dm_verity *v, enum verity_block_type type,
 	}
 
 	DMERR("%s: %s block %llu is corrupted", v->data_dev->name, type_str, block);
-	
+
 	for(i=0 ; i < v->salt_size; i++){
-		sprintf(hex_str + (i * 2), "%02x", *(v->salt + i)); 	
+		sprintf(hex_str + (i * 2), "%02x", *(v->salt + i));
 	}
 	DMERR("dm-verity salt: %s", hex_str);
 
@@ -279,7 +275,7 @@ static int verity_handle_err(struct dm_verity *v, enum verity_block_type type,
 	} else {
 		DMERR("%s: %s block : Unknown block type", v->data_dev->name, type_str);
 	}
-	
+
 	if (io->io_retry == IO_RETRY_MAX) panic("dmv corrupt");
 
 	if (v->corrupted_errs == DM_VERITY_MAX_CORRUPTED_ERRS)
@@ -624,13 +620,7 @@ static int verity_verify_io(struct dm_verity_io *io)
 #else
 			r = verity_handle_err(v, DM_VERITY_BLOCK_TYPE_DATA, io->block + b);
 #endif
-		if (r) {
-#if defined(CONFIG_TZ_ICCC)
-			pr_err("ICCC smc ret = %llu\n",
-				(unsigned long long)exynos_smc(SMC_CMD_DMV_WRITE_STATUS, 1, 0, 0));
-#endif
 			return -EIO;
-		}
 	}
 
 	return 0;
@@ -826,7 +816,7 @@ int verity_map(struct dm_target *ti, struct bio *bio)
 	io->iter = bio->bi_iter;
 
 	io->io_retry = 0;
-	
+
 	verity_fec_init_io(io);
 
 	verity_submit_prefetch(v, io);
