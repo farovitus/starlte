@@ -801,19 +801,7 @@ static ssize_t show_cpufreq_table(struct kobject *kobj,
 	return count - 1;
 }
 
-#ifdef CONFIG_SCHED_HMP
-static bool hmp_boost;
-static void control_hmp_boost(bool enable)
-{
-	if (hmp_boost && !enable) {
-		set_hmp_boost(0);
-		hmp_boost = false;
-	} else if (!hmp_boost && enable) {
-		set_hmp_boost(1);
-		hmp_boost = true;
-	}
-}
-#elif defined(CONFIG_SCHED_EHMP)
+#ifdef CONFIG_SCHED_EHMP
 #include <linux/ehmp.h>
 
 static bool ehmp_boost;
@@ -843,15 +831,7 @@ static ssize_t show_cpufreq_min_limit(struct kobject *kobj,
 	list_for_each_entry_reverse(domain, &domains, list) {
 		scale++;
 
-#ifdef CONFIG_SCHED_HMP
-		/*
-		 * In HMP architecture, last domain is big.
-		 * If HMP boost is not activated, PM QoS value of
-		 * big is not shown.
-		 */
-		if (domain == last_domain() && !get_hmp_boost())
-			continue;
-#elif defined(CONFIG_SCHED_EHMP)
+#ifdef CONFIG_SCHED_EHMP
 		if (domain == last_domain() && !ehmp_boost)
 			continue;
 #endif
@@ -990,15 +970,6 @@ static ssize_t store_cpufreq_min_limit_wo_boost(struct kobject *kobj,
 			pm_qos_update_request(&domain->user_min_qos_wo_boost_req, 0);
 			continue;
 		}
-
-#ifdef CONFIG_SCHED_HMP
-		/*
-		 * If hmp_boost was already activated by cpufreq_min_limit,
-		 * print a message to avoid confusing who activated hmp_boost.
-		 */
-		if (domain == last_domain() && hmp_boost)
-			pr_info("HMP boost was already activated by cpufreq_min_limit node");
-#endif
 
 		freq = min(freq, domain->max_freq);
 		pm_qos_update_request(&domain->user_min_qos_wo_boost_req, freq);

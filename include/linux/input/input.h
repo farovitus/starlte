@@ -5,9 +5,7 @@
 #include <linux/pm_qos.h>
 #include <linux/of.h>
 
-#ifdef CONFIG_SCHED_HMP
-#define USE_HMP_BOOST
-#elif defined CONFIG_SCHED_EHMP
+#ifdef CONFIG_SCHED_EHMP
 #define USE_EHMP_BOOST
 #endif
 
@@ -45,17 +43,7 @@
 		pm_qos_remove_request(req); \
 }
 
-#ifdef USE_HMP_BOOST
-#define set_hmp(enable)	 { \
-	if (enable != current_hmp_boost) { \
-		pr_booster("[Input Booster2] ******      set_hmp : %d ( %s )\n", enable, __FUNCTION__); \
-		if (set_hmp_boost(enable) < 0) { \
-			pr_booster("[Input Booster2] ******            !!! fail to HMP !!!\n"); \
-		} \
-		current_hmp_boost = enable; \
-	} \
-}
-#elif defined USE_EHMP_BOOST
+#ifdef USE_EHMP_BOOST
 #include <linux/ehmp.h>
 
 static DEFINE_MUTEX(input_lock);
@@ -648,6 +636,3 @@ void input_booster(struct input_dev *dev);
 void input_booster_init(void);
 #endif
 #endif // Input Booster -
-
-
-
