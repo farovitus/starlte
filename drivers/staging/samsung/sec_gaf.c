@@ -224,10 +224,6 @@ static struct GAForensicINFO {
 #else
 	.gaf_fp = 0,
 #endif
-#ifdef CONFIG_FIVE
-	.task_struct_integrity = offsetof(struct task_struct, integrity),
-	.file_struct_f_signature = offsetof(struct file, f_signature),
-#endif
 	.mount_struct_mnt_mountpoint = offsetof(struct mount, mnt_mountpoint),
 	.vfsmount_struct_bp_mount =
 		(short)(offsetof(struct mount, mnt_mountpoint)

@@ -21,8 +21,6 @@
 #include <trace/events/writeback.h>
 #include "internal.h"
 
-#include <crypto/fmp.h>
-
 /*
  * Inode locking rules:
  *
@@ -185,10 +183,6 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
 #ifdef CONFIG_SDP
 	mapping->userid = 0;
 #endif
-	mapping->fmp_ci.iv = NULL;
-	memset(mapping->fmp_ci.key, 0, MAX_KEY_SIZE);
-	mapping->fmp_ci.key_length = 0;
-	mapping->fmp_ci.private_algo_mode = 0;
 
 	inode->i_private = NULL;
 	inode->i_mapping = mapping;

@@ -21,8 +21,8 @@ md-mod-y	+= md.o bitmap.o
 raid456-y	+= raid5.o raid5-cache.o
 
 # Note: link order is important.  All raid personalities
-# and must come before md.o, as they each initialise
-# themselves, and md.o may use the personalities when it
+# and must come before md.o, as they each initialise 
+# themselves, and md.o may use the personalities when it 
 # auto-initialised.
 
 obj-$(CONFIG_MD_LINEAR)		+= linear.o
@@ -53,7 +53,7 @@ obj-$(CONFIG_DM_LOG_USERSPACE)	+= dm-log-userspace.o
 obj-$(CONFIG_DM_ZERO)		+= dm-zero.o
 obj-$(CONFIG_DM_RAID)	+= dm-raid.o
 obj-$(CONFIG_DM_THIN_PROVISIONING)	+= dm-thin-pool.o
-obj-$(CONFIG_DM_VERITY)		+= dm-verity.o dm-dirty.o
+obj-$(CONFIG_DM_VERITY)		+= dm-verity.o
 obj-$(CONFIG_DM_CACHE)		+= dm-cache.o
 obj-$(CONFIG_DM_CACHE_SMQ)	+= dm-cache-smq.o
 obj-$(CONFIG_DM_CACHE_CLEANER)	+= dm-cache-cleaner.o

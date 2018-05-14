@@ -1172,13 +1172,8 @@ static int ext4_block_write_begin(struct page *page, loff_t pos, unsigned len,
 	}
 	if (unlikely(err))
 		page_zero_new_buffers(page, from, to);
-#ifdef CONFIG_FS_PRIVATE_ENCRYPTION
-	else if (decrypt & !inode->i_mapping->fmp_ci.private_algo_mode)
-		err = fscrypt_decrypt_page(page);
-#else
 	else if (decrypt)
 		err = fscrypt_decrypt_page(page);
-#endif
 	return err;
 }
 #endif
@@ -3522,7 +3517,7 @@ static ssize_t ext4_direct_IO_write(struct kiocb *iocb, struct iov_iter *iter)
 		get_block_func = ext4_dio_get_block_unwritten_async;
 		dio_flags = DIO_LOCKING;
 	}
-#if defined(CONFIG_EXT4_FS_ENCRYPTION) && !defined(CONFIG_FS_PRIVATE_ENCRYPTION)
+#ifdef CONFIG_EXT4_FS_ENCRYPTION
 	BUG_ON(ext4_encrypted_inode(inode) && S_ISREG(inode->i_mode));
 #endif
 	if (IS_DAX(inode)) {
@@ -3644,11 +3639,8 @@ static ssize_t ext4_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
 	ssize_t ret;
 	int rw = iov_iter_rw(iter);
 
-#if defined(CONFIG_EXT4_FS_ENCRYPTION) && !defined(CONFIG_FS_PRIVATE_ENCRYPTION)
+#ifdef CONFIG_EXT4_FS_ENCRYPTION
 	if (ext4_encrypted_inode(inode) && S_ISREG(inode->i_mode))
-		return 0;
-#elif defined(CONFIG_FS_PRIVATE_ENCRYPTION)
-	if (ext4_encrypted_inode(inode) && !fscrypt_has_encryption_key(inode))
 		return 0;
 #endif
 
@@ -3848,12 +3840,7 @@ static int __ext4_block_zero_page_range(handle_t *handle,
 			/* We expect the key to be set. */
 			BUG_ON(!fscrypt_has_encryption_key(inode));
 			BUG_ON(blocksize != PAGE_SIZE);
-#ifdef CONFIG_FS_PRIVATE_ENCRYPTION
-			if (!page->mapping->fmp_ci.private_algo_mode)
-				WARN_ON_ONCE(fscrypt_decrypt_page(page));
-#else
 			WARN_ON_ONCE(fscrypt_decrypt_page(page));
-#endif
 		}
 	}
 	if (ext4_should_journal_data(inode)) {

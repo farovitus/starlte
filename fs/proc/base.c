@@ -87,7 +87,6 @@
 #include <linux/slab.h>
 #include <linux/flex_array.h>
 #include <linux/posix-timers.h>
-#include <linux/task_integrity.h>
 #ifdef CONFIG_HARDWALL
 #include <asm/hardwall.h>
 #endif
@@ -2395,7 +2394,7 @@ out:
 	return -ENOENT;
 }
 
-static struct dentry *proc_pident_lookup(struct inode *dir, 
+static struct dentry *proc_pident_lookup(struct inode *dir,
 					 struct dentry *dentry,
 					 const struct pid_entry *ents,
 					 unsigned int nents)
@@ -2537,7 +2536,7 @@ static const struct pid_entry attr_dir_stuff[] = {
 
 static int proc_attr_dir_readdir(struct file *file, struct dir_context *ctx)
 {
-	return proc_pident_readdir(file, ctx, 
+	return proc_pident_readdir(file, ctx,
 				   attr_dir_stuff, ARRAY_SIZE(attr_dir_stuff));
 }
 
@@ -2831,46 +2830,6 @@ static const struct file_operations proc_setgroups_operations = {
 };
 #endif /* CONFIG_USER_NS */
 
-#ifdef CONFIG_FIVE
-static int proc_integrity_read(struct seq_file *m, struct pid_namespace *ns,
-				struct pid *pid, struct task_struct *task)
-{
-	seq_printf(m, "%x\n", task_integrity_user_read(task->integrity));
-	return 0;
-}
-
-static int proc_integrity_label_read(struct seq_file *m,
-				struct pid_namespace *ns,
-				struct pid *pid, struct task_struct *task)
-{
-	struct integrity_label *l;
-
-	spin_lock(&task->integrity->lock);
-	l = task->integrity->label;
-	spin_unlock(&task->integrity->lock);
-
-	if (l) {
-		size_t remaining_len;
-		char *buffer = NULL;
-		size_t hex_len = l->len * 2;
-
-		seq_printf(m, "%zu\n", hex_len);
-		remaining_len = seq_get_buf(m, &buffer);
-
-		if (l->len && remaining_len) {
-			size_t size = min(hex_len, remaining_len);
-
-			bin2hex(buffer, l->data, size);
-			seq_commit(m, size);
-		}
-	} else {
-		seq_printf(m, "%d\n", -1);
-	}
-
-	return 0;
-}
-#endif
-
 static int proc_pid_personality(struct seq_file *m, struct pid_namespace *ns,
 				struct pid *pid, struct task_struct *task)
 {
@@ -2982,10 +2941,6 @@ static const struct pid_entry tgid_base_stuff[] = {
 	REG("timers",	  S_IRUGO, proc_timers_operations),
 #endif
 	REG("timerslack_ns", S_IRUGO|S_IWUGO, proc_pid_set_timerslack_ns_operations),
-#ifdef CONFIG_FIVE
-	ONE("integrity", S_IRUGO, proc_integrity_read),
-	ONE("integrity_label", S_IRUGO, proc_integrity_label_read),
-#endif
 };
 
 static int proc_tgid_base_readdir(struct file *file, struct dir_context *ctx)

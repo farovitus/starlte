@@ -86,7 +86,6 @@
 #include <asm/tlbflush.h>
 
 #include <trace/events/sched.h>
-#include <linux/task_integrity.h>
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/task.h>
@@ -1026,8 +1025,7 @@ struct mm_struct *mm_access(struct task_struct *task, unsigned int mode)
 
 	mm = get_task_mm(task);
 	if (mm && mm != current->mm &&
-			!ptrace_may_access(task, mode) &&
-			!capable(CAP_SYS_RESOURCE)) {
+			!ptrace_may_access(task, mode)) {
 		mmput(mm);
 		mm = ERR_PTR(-EACCES);
 	}
@@ -1457,40 +1455,6 @@ init_task_pid(struct task_struct *task, enum pid_type type, struct pid *pid)
 	 task->pids[type].pid = pid;
 }
 
-#ifdef CONFIG_FIVE
-static int dup_task_integrity(unsigned long clone_flags,
-					struct task_struct *tsk)
-{
-	int ret = 0;
-
-	if (clone_flags & CLONE_VM) {
-		task_integrity_get(current->integrity);
-		tsk->integrity = current->integrity;
-	} else {
-		tsk->integrity = task_integrity_alloc();
-
-		if (tsk->integrity) {
-			ret = five_fork(current, tsk);
-
-			if (ret)
-				task_integrity_put(tsk->integrity);
-
-		}
-		else
-			ret = -ENOMEM;
-
-	}
-
-	return ret;
-}
-#else
-static inline int dup_task_integrity(unsigned long clone_flags,
-						struct task_struct *tsk)
-{
-	return 0;
-}
-#endif
-
 /*
  * This creates a new process as a copy of the old one,
  * but does not actually start it yet.
@@ -1788,10 +1752,6 @@ static __latent_entropy struct task_struct *copy_process(
 	 * progress.
 	 */
 	retval = cgroup_can_fork(p);
-	if (retval)
-		goto bad_fork_free_pid;
-
-	retval = dup_task_integrity(clone_flags, p);
 	if (retval)
 		goto bad_fork_free_pid;
 

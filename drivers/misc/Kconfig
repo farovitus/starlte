@@ -803,5 +803,4 @@ source "drivers/misc/mcu_ipc/Kconfig"
 source "drivers/misc/modem_v1/Kconfig"
 source "drivers/misc/modem_if/Kconfig"
 source "drivers/misc/dev_ril_bridge/Kconfig"
-source "drivers/misc/five_tee_driver/Kconfig"
 endmenu
