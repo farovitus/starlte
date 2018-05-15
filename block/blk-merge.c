@@ -677,13 +677,6 @@ static struct inode *get_inode_from_bio(struct bio *bio)
 		return NULL;
 	if (!bio->bi_io_vec->bv_page)
 		return NULL;
-	if (PageAnon(bio->bi_io_vec->bv_page)) {
-		struct inode *inode;
-
-		/* Using direct-io (O_DIRECT) without page cache */
-		inode = bio->fmp_ci.bi_dio_inode;
-		return inode;
-	}
 
 	if (!bio->bi_io_vec->bv_page->mapping)
 		return NULL;

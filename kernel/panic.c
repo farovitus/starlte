@@ -196,16 +196,6 @@ void panic(const char *fmt, ...)
 	ecd_printf("Kernel Panic - not syncing: %s\n", buf);
 	pr_auto(ASL5, "Kernel panic - not syncing: %s\n", buf);
 
-#if !defined(SEC_PRODUCT_SHIP) && defined(CONFIG_RELOCATABLE_KERNEL)
-	{
-		u64 const kernel_offset = kimage_vaddr - KIMAGE_VADDR;
-		u64 kernel_addr = SZ_2G + SZ_512K + kernel_offset;
-
-		pr_emerg("Kernel loaded at: 0x%llx, offset from compile-time address %llx\n",
-		 kernel_addr, kernel_offset);
-	}
-#endif
-
 	exynos_ss_prepare_panic();
 	exynos_ss_dump_panic(buf, (size_t)strnlen(buf, sizeof(buf)));
 #ifdef CONFIG_DEBUG_BUGVERBOSE

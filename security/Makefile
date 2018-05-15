@@ -36,12 +36,5 @@ obj-y += sdp/
 obj-y += sdp/built-in.o
 endif
 
-# TIMA uevent
-obj-$(CONFIG_TIMA)     += tima_uevent/tima_uevent.o
-
-# TZ ICCC
-obj-$(CONFIG_TZ_ICCC)	  += tz_iccc/
-
 # MST driver
 obj-$(CONFIG_MST_LDO)	  += mstdrv/
-

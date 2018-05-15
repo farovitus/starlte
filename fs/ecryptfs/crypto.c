@@ -49,122 +49,6 @@
 #define DECRYPT		0
 #define ENCRYPT		1
 
-#ifdef CONFIG_CRYPTO_FIPS
-static struct crypto_rng *ecryptfs_crypto_rng;
-
-static int crypto_rng_init(void)
-{
-	const int seed_len = 32;
-	char *seed = NULL;
-	int read_bytes = 0;
-	int get_bytes = 0;
-	int trialcount = 10;
-	int ret = 0;
-
-	struct file *filp = NULL;
-	mm_segment_t oldfs;
-
-	ecryptfs_crypto_rng = NULL;
-	seed = kmalloc(seed_len, GFP_KERNEL);
-	if (!seed) {
-		ecryptfs_printk(KERN_ERR, "Failed to get memory space for seed\n");
-		ret = -1;
-		goto err_out;
-	}
-
-	filp = filp_open("/dev/random", O_RDONLY, 0);
-	if (IS_ERR(filp)) {
-		ecryptfs_printk(KERN_ERR, "Failed to open /dev/random\n");
-		ret = -1;
-		goto err_out;
-	}
-
-	oldfs = get_fs();
-	set_fs(KERNEL_DS);
-	memset((void *)seed, 0, seed_len);
-
-	while (trialcount > 0) {
-		get_bytes = (int)filp->f_op->read(filp, &(seed[read_bytes]), seed_len-read_bytes, &filp->f_pos);
-
-		if (get_bytes > 0)
-			read_bytes += get_bytes;
-		if (read_bytes != seed_len)
-			trialcount--;
-		else
-			break;
-	}
-	set_fs(oldfs);
-
-	if (read_bytes != seed_len) {
-		ecryptfs_printk(KERN_ERR,
-			"Failed to get enough random bytes (read=%d/request=%d)\n",
-			read_bytes, seed_len);
-		ret = -1;
-		goto err_out;
-	}
-
-	ecryptfs_crypto_rng = crypto_alloc_rng("stdrng", 0, 0);
-	if (IS_ERR(ecryptfs_crypto_rng)) {
-		ecryptfs_printk(KERN_ERR, "RNG allocateion fail \t Not Available: %ld\n", PTR_ERR(ecryptfs_crypto_rng));
-		ret = -1;
-		goto err_out;
-	}
-
-	ret = crypto_rng_reset(ecryptfs_crypto_rng, seed, seed_len);
-
-	if (ret < 0)
-		ecryptfs_printk(KERN_ERR, "rng reset fail (%d)\n", ret);
-
-err_out:
-	if (seed)
-		kfree(seed);
-	if (filp)
-		filp_close(filp, NULL);
-
-	return ret;
-}
-
-static void crypto_rng_destroy(void)
-{
-	crypto_free_rng(ecryptfs_crypto_rng);
-	ecryptfs_crypto_rng = NULL;
-}
-
-/**
- * crypto_cc_rng_get_bytes
- * @data: Buffer to get random bytes
- * @len: the length of random bytes
- */
-static void crypto_cc_rng_get_bytes(u8 *data, unsigned int len)
-{
-	int ret = 0;
-
-	if (ecryptfs_crypto_rng == NULL || IS_ERR(ecryptfs_crypto_rng)) {
-		if (crypto_rng_init() < 0) {
-			ecryptfs_printk(KERN_ERR, "crypto_rng_init fail\n");
-			crypto_rng_destroy();
-			return;
-		}
-	}
-
-	if (ecryptfs_crypto_rng == NULL || IS_ERR(ecryptfs_crypto_rng)) {
-		ecryptfs_printk(KERN_ERR, "rng generation is failed\n");
-	} else {
-		if (data == NULL || IS_ERR(data)) {
-			ecryptfs_printk(KERN_ERR, "key buffer is wrong\n");
-			crypto_rng_destroy();
-			return;
-		}
-
-		ret = crypto_rng_get_bytes(ecryptfs_crypto_rng, data, len);
-		if (ret < 0) {
-			ecryptfs_printk(KERN_ERR, "generate_random failed to generate random number (%d)\n", ret);
-			crypto_rng_destroy();
-		}
-	}
-}
-#endif
-
 /**
  * ecryptfs_to_hex
  * @dst: Buffer to take hex character representation of contents of
@@ -962,11 +846,7 @@ out:
 
 static void get_random_key(u8 *data, unsigned int len)
 {
-#ifdef CONFIG_CRYPTO_FIPS
-	crypto_cc_rng_get_bytes(data, len);
-#else
 	get_random_bytes(data, len);
-#endif
 }
 
 static void ecryptfs_generate_new_key(struct ecryptfs_crypt_stat *crypt_stat)
@@ -1934,7 +1814,6 @@ ecryptfs_process_key_cipher(struct crypto_skcipher **key_tfm,
 		      "allowable is [%d]\n", *key_size, ECRYPTFS_MAX_KEY_BYTES);
 		goto out;
 	}
-
 	rc = ecryptfs_crypto_api_algify_cipher_name(&full_alg_name, cipher_name,
 						    (mount_flags & ECRYPTFS_ENABLE_CC)?ECRYPTFS_AES_CBC_MODE:ECRYPTFS_AES_ECB_MODE);
 	if (rc)
@@ -1949,9 +1828,7 @@ ecryptfs_process_key_cipher(struct crypto_skcipher **key_tfm,
 	crypto_skcipher_set_flags(*key_tfm, CRYPTO_TFM_REQ_WEAK_KEY);
 	if (*key_size == 0)
 		*key_size = crypto_skcipher_default_keysize(*key_tfm);
-
 	get_random_key(dummy_key, *key_size);
-
 	rc = crypto_skcipher_setkey(*key_tfm, dummy_key, *key_size);
 	if (rc) {
 		printk(KERN_ERR "Error attempting to set key of size [%zd] for "
@@ -1992,9 +1869,6 @@ int ecryptfs_destroy_crypto(void)
 		crypto_free_skcipher(key_tfm->key_tfm);
 		kmem_cache_free(ecryptfs_key_tfm_cache, key_tfm);
 	}
-#ifdef CONFIG_CRYPTO_FIPS
-	crypto_rng_destroy();
-#endif
 	mutex_unlock(&key_tfm_list_mutex);
 	return 0;
 }

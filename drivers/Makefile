@@ -211,6 +211,3 @@ obj-$(CONFIG_VISION_SUPPORT)	+= vision/
 
 #Fingerprint
 obj-$(CONFIG_SENSORS_FINGERPRINT)       += fingerprint/
-
-# uH
-obj-$(CONFIG_UH)		+= uh/

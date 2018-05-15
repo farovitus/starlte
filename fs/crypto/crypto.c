@@ -29,8 +29,6 @@
 #include <linux/namei.h>
 #include <linux/fscrypto.h>
 
-#include <crypto/fmp.h>
-
 static unsigned int num_prealloc_crypto_pages = 32;
 static unsigned int num_prealloc_crypto_ctxs = 128;
 
@@ -306,20 +304,11 @@ int fscrypt_zeroout_range(struct inode *inode, pgoff_t lblk,
 	}
 
 	while (len--) {
-#ifdef CONFIG_FS_PRIVATE_ENCRYPTION
-		if (!inode->i_mapping->fmp_ci.private_algo_mode) {
-#endif /* CONFIG FS_PRIVATE_ENCRYPTION */
-			err = do_page_crypto(inode, FS_ENCRYPT, lblk,
-						ZERO_PAGE(0), ciphertext_page,
-						GFP_NOFS);
-			if (err)
-				goto errout;
-#ifdef CONFIG_FS_PRIVATE_ENCRYPTION
-		} else {
-			memset(page_address(ciphertext_page), 0, PAGE_SIZE);
-			ciphertext_page->mapping = inode->i_mapping;
-		}
-#endif /* CONFIG FS_PRIVATE_ENCRYPTION */
+		err = do_page_crypto(inode, FS_ENCRYPT, lblk,
+					ZERO_PAGE(0), ciphertext_page,
+					GFP_NOFS);
+		if (err)
+			goto errout;
 
 		bio = bio_alloc(GFP_NOWAIT, 1);
 		if (!bio) {
@@ -350,10 +339,6 @@ int fscrypt_zeroout_range(struct inode *inode, pgoff_t lblk,
 	}
 	err = 0;
 errout:
-#ifdef CONFIG_FS_PRIVATE_ENCRYPTION
-	if (inode->i_mapping->fmp_ci.private_algo_mode)
-		ciphertext_page->mapping = NULL;
-#endif /* CONFIG FS_PRIVATE_ENCRYPTION */
 	fscrypt_release_ctx(ctx);
 	return err;
 }
@@ -532,8 +517,6 @@ EXPORT_SYMBOL(fscrypt_initialize);
  */
 static int __init fscrypt_init(void)
 {
-	int res = -ENOMEM;
-
 	fscrypt_read_workqueue = alloc_workqueue("fscrypt_read_queue",
 							WQ_HIGHPRI, 0);
 	if (!fscrypt_read_workqueue)
@@ -547,20 +530,14 @@ static int __init fscrypt_init(void)
 	if (!fscrypt_info_cachep)
 		goto fail_free_ctx;
 
-	res = fscrypt_sec_crypto_init();
-	if (res)
-		goto fail_free_info;
-
 	return 0;
 
-fail_free_info:
-	kmem_cache_destroy(fscrypt_info_cachep);
 fail_free_ctx:
 	kmem_cache_destroy(fscrypt_ctx_cachep);
 fail_free_queue:
 	destroy_workqueue(fscrypt_read_workqueue);
 fail:
-	return res;
+	return -ENOMEM;
 }
 module_init(fscrypt_init)
 
@@ -570,7 +547,6 @@ module_init(fscrypt_init)
 static void __exit fscrypt_exit(void)
 {
 	fscrypt_destroy();
-	fscrypt_sec_crypto_exit();
 
 	if (fscrypt_read_workqueue)
 		destroy_workqueue(fscrypt_read_workqueue);

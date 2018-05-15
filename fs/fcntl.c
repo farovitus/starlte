@@ -22,7 +22,6 @@
 #include <linux/pid_namespace.h>
 #include <linux/user_namespace.h>
 #include <linux/shmem_fs.h>
-#include <linux/task_integrity.h>
 
 #include <asm/poll.h>
 #include <asm/siginfo.h>
@@ -336,23 +335,6 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
 	case F_GETPIPE_SZ:
 		err = pipe_fcntl(filp, cmd, arg);
 		break;
-#ifdef CONFIG_FIVE
-	case F_FIVE_SIGN:
-		err = five_fcntl_sign(filp,
-				(struct integrity_label __user *)arg);
-		break;
-	case F_FIVE_VERIFY_ASYNC:
-		err = five_fcntl_verify_async(filp);
-		break;
-	case F_FIVE_VERIFY_SYNC:
-		err = five_fcntl_verify_sync(filp);
-		break;
-#ifdef CONFIG_FIVE_PA_FEATURE
-	case F_FIVE_PA_SETXATTR:
-		err = fivepa_fcntl_setxattr(filp, (void __user *)arg);
-		break;
-#endif
-#endif
 	case F_ADD_SEALS:
 	case F_GET_SEALS:
 		err = shmem_fcntl(filp, cmd, arg);
@@ -377,7 +359,7 @@ static int check_fcntl_cmd(unsigned cmd)
 }
 
 SYSCALL_DEFINE3(fcntl, unsigned int, fd, unsigned int, cmd, unsigned long, arg)
-{	
+{
 	struct fd f = fdget_raw(fd);
 	long err = -EBADF;
 
@@ -402,7 +384,7 @@ out:
 #if BITS_PER_LONG == 32
 SYSCALL_DEFINE3(fcntl64, unsigned int, fd, unsigned int, cmd,
 		unsigned long, arg)
-{	
+{
 	struct fd f = fdget_raw(fd);
 	long err = -EBADF;
 
@@ -417,7 +399,7 @@ SYSCALL_DEFINE3(fcntl64, unsigned int, fd, unsigned int, cmd,
 	err = security_file_fcntl(f.file, cmd, arg);
 	if (err)
 		goto out1;
-	
+
 	switch (cmd) {
 	case F_GETLK64:
 	case F_OFD_GETLK:
@@ -485,8 +467,8 @@ static void send_sigio_to_task(struct task_struct *p,
 		siginfo_t si;
 		default:
 			/* Queue a rt signal with the appropriate fd as its
-			   value.  We use SI_SIGIO as the source, not 
-			   SI_KERNEL, since kernel signals always get 
+			   value.  We use SI_SIGIO as the source, not
+			   SI_KERNEL, since kernel signals always get
 			   delivered even if we can't queue.  Failure to
 			   queue in this case _should_ be reported; we fall
 			   back to SIGIO in that case. --sct */
@@ -516,7 +498,7 @@ void send_sigio(struct fown_struct *fown, int fd, int band)
 	enum pid_type type;
 	struct pid *pid;
 	int group = 1;
-	
+
 	read_lock(&fown->lock);
 
 	type = fown->pid_type;
@@ -528,7 +510,7 @@ void send_sigio(struct fown_struct *fown, int fd, int band)
 	pid = fown->pid;
 	if (!pid)
 		goto out_unlock_fown;
-	
+
 	read_lock(&tasklist_lock);
 	do_each_pid_task(pid, type, p) {
 		send_sigio_to_task(p, fown, fd, band, group);
@@ -552,7 +534,7 @@ int send_sigurg(struct fown_struct *fown)
 	struct pid *pid;
 	int group = 1;
 	int ret = 0;
-	
+
 	read_lock(&fown->lock);
 
 	type = fown->pid_type;
@@ -566,7 +548,7 @@ int send_sigurg(struct fown_struct *fown)
 		goto out_unlock_fown;
 
 	ret = 1;
-	
+
 	read_lock(&tasklist_lock);
 	do_each_pid_task(pid, type, p) {
 		send_sigurg_to_task(p, fown, group);
