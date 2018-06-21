@@ -1177,7 +1177,8 @@ static int ext4_block_write_begin(struct page *page, loff_t pos, unsigned len,
 		err = fscrypt_decrypt_page(page);
 #else
 	else if (decrypt)
-		err = fscrypt_decrypt_page(page);
+		err = fscrypt_decrypt_page(page->mapping->host, page,
+				PAGE_SIZE, 0, page->index);
 #endif
 	return err;
 }
@@ -3852,7 +3853,8 @@ static int __ext4_block_zero_page_range(handle_t *handle,
 			if (!page->mapping->fmp_ci.private_algo_mode)
 				WARN_ON_ONCE(fscrypt_decrypt_page(page));
 #else
-			WARN_ON_ONCE(fscrypt_decrypt_page(page));
+			WARN_ON_ONCE(fscrypt_decrypt_page(page->mapping->host,
+						page, PAGE_SIZE, 0, page->index));
 #endif
 		}
 	}
@@ -4470,8 +4472,11 @@ void ext4_set_inode_flags(struct inode *inode)
 		new_fl |= S_DIRSYNC;
 	if (test_opt(inode->i_sb, DAX) && S_ISREG(inode->i_mode))
 		new_fl |= S_DAX;
+	if (flags & EXT4_ENCRYPT_FL)
+		new_fl |= S_ENCRYPTED;
 	inode_set_flags(inode, new_fl,
-			S_SYNC|S_APPEND|S_IMMUTABLE|S_NOATIME|S_DIRSYNC|S_DAX);
+			S_SYNC|S_APPEND|S_IMMUTABLE|S_NOATIME|S_DIRSYNC|S_DAX|
+			S_ENCRYPTED);
 }
 
 /* Propagate flags from i_flags to EXT4_I(inode)->i_flags */
