@@ -588,7 +588,7 @@ void sec_debug_EMFILE_error_proc(unsigned long files_addr)
 #endif /* CONFIG_SEC_DEBUG_FILE_LEAK */
 
 /* leave the following definithion of module param call here for the compatibility with other models */
-module_param_call(force_error, sec_debug_force_error, NULL, NULL, 0644);
+//module_param_call(force_error, sec_debug_force_error, NULL, NULL, 0644);
 
 static struct sec_debug_shared_info *sec_debug_info;
 
@@ -1072,4 +1072,3 @@ int sec_debug_save_panic_info(const char *str, unsigned long caller)
 	return 0;
 }
 #endif /* CONFIG_SEC_DUMP_SUMMARY */
-
