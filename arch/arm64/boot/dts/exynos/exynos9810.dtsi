@@ -5025,8 +5025,8 @@
 		cl_busy_ratio = <65>;
 		/* single_freq is parsed from ECT */
 		dual_freq = <2314000>;
-		triple_freq = <1794000>;
-		quad_freq = <1794000>;
+		triple_freq = <2314000>;
+		quad_freq = <2314000>;
 		cal-id = <ACPM_DVFS_CPUCL1>;
 	};
 
@@ -5100,7 +5100,7 @@
 			dm-type = <DM_CPU_CL1>;
 
 			min-freq = <858000>;
-			max-freq = <1794000>;
+			max-freq = <2314000>;
 			policy-max = <1794000>;
 
 			/* PM QoS Class ID*/
@@ -5122,7 +5122,7 @@
 						  2652000 1794000
 						  2496000 1794000
 						  2314000 1794000
-						  2158000 1794000
+						  2106000 1794000
 						  2002000 1794000
 						  1924000 1794000
 						  1794000 1794000
