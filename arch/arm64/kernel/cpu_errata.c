@@ -17,6 +17,7 @@
  */
 
 #include <linux/types.h>
+#include <asm/cachetype.h>
 #include <asm/cpu.h>
 #include <asm/cputype.h>
 #include <asm/cpufeature.h>
@@ -41,8 +42,8 @@ has_mismatched_cache_type(const struct arm64_cpu_capabilities *entry,
 		mask ^= arm64_ftr_reg_ctrel0.strict_mask;
 
 	WARN_ON(scope != SCOPE_LOCAL_CPU || preemptible());
-	return (read_cpuid_cachetype() & arm64_ftr_reg_ctrel0.strict_mask) !=
-	       (arm64_ftr_reg_ctrel0.sys_val & arm64_ftr_reg_ctrel0.strict_mask);
+	return (read_cpuid_cachetype() & mask) !=
+	       (arm64_ftr_reg_ctrel0.sys_val & mask);
 }
 
 static int cpu_enable_trap_ctr_access(void *__unused)
