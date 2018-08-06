@@ -297,7 +297,7 @@ int callback_bbd_on_mcu_ready(void *ssh_data, bool ready)
  */
  void makeResetInfoString(char *src, char *dst)
 {
-        int i, idx = 0, totalLen = (int)strlen(src);
+	int i, idx = 0, totalLen = (int)strlen(src);
 
 	for(i = 0; i < totalLen; i++) {
 		pr_info("%c", src[i]);
