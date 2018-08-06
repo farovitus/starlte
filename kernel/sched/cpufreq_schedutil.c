@@ -283,6 +283,12 @@ static void sugov_get_util(unsigned long *util, unsigned long *max, u64 time)
 static void sugov_set_iowait_boost(struct sugov_cpu *sg_cpu, u64 time,
 				   unsigned int flags)
 {
+	/* HACK: block iowait boost to avoid unnecessary setting max frequency */
+	if (sg_cpu->iowait_boost > 0) {
+		sg_cpu->iowait_boost = 0;
+		return;
+	}
+	
 	/* Clear iowait_boost if the CPU apprears to have been idle. */
 	if (sg_cpu->iowait_boost) {
 		s64 delta_ns = time - sg_cpu->last_update;
@@ -307,8 +313,6 @@ static void sugov_set_iowait_boost(struct sugov_cpu *sg_cpu, u64 time,
 			sg_cpu->iowait_boost = sg_cpu->sg_policy->policy->min;
 		}
 	}
-	/* HACK: block iowait boost to avoid unnecessary setting max frequency */
-	sg_cpu->iowait_boost = 0;
 }
 
 static void sugov_iowait_boost(struct sugov_cpu *sg_cpu, unsigned long *util,
