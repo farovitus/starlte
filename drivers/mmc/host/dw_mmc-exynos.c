@@ -1112,10 +1112,10 @@ static int dw_mci_exynos_execute_tuning(struct dw_mci_slot *slot, u32 opcode,
 	if (tuned) {
 		host->pdata->clk_smpl = priv->tuned_sample = best_sample;
 		if (host->pdata->only_once_tune)
-		host->pdata->tuned = true;
+			host->pdata->tuned = true;
 
 			if (best_sample_ori % 2)
-			best_sample += 1;
+				best_sample += 1;
 
 		dw_mci_exynos_set_sample(host, best_sample, false);
 				dw_mci_set_fine_tuning_bit(host, false);
