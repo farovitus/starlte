@@ -498,7 +498,7 @@ END(vectors)
 	.if	\el == 0
 	mov	x0, sp
 	and	x0, x0, #~(THREAD_SIZE - 1)	// Ensure MDSCR_EL1.SS is clear,
-	ldr	x1, [x0, #TI_TASK]		// since we can unmask debug
+	ldr	x1, [x0, #TSK_TI_TASK]		// since we can unmask debug
 	ldr	w0, [x1, #TSK_PID]
 	cmp	w0, #1
 	b.ne	3f
