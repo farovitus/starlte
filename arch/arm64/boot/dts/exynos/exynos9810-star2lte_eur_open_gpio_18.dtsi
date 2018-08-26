@@ -138,11 +138,6 @@
 		PIN_SLP(gpg2-1, INPUT, NONE);	/* SUB_PMIC_IRQ_N */
 		PIN_SLP(gpg2-4, PREV, DOWN);	/* CAM_TORCH_EN */
 		PIN_SLP(gpg2-6, OUT0, DOWN);	/* CAM_RST_N */
-
-		PIN_SLP(gpp0-0, OUT0, NONE);		/* BTP_SPI_CLK */
-		PIN_SLP(gpp0-1, OUT0, NONE);		/* BTP_SPI_MOSI */
-		PIN_SLP(gpp0-2, INPUT, DOWN);	/* BTP_SPI_MISO */
-		PIN_SLP(gpp0-3, OUT0, NONE);		/* BTP_SPI_CS_N */
 	};
 };
 

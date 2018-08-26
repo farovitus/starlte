@@ -35,6 +35,14 @@
 			samsung,pin-drv = <0>;
 		};
 	};
+	pinctrl@13A80000 {
+		btp_rst: btp-rst {
+			samsung,pins = "gph1-1";
+			samsung,pin-function = <1>;
+			samsung,pin-pud = <1>;
+			samsung,pin-drv = <0>;
+		};
+	};
 
 	pinctrl@10430000 {
 		/* SPI_FP */
@@ -97,7 +105,7 @@
 			spi-max-frequency = <13000000>;
 			pinctrl-names = "default", "pins_poweron", "pins_poweroff"
 							, "pins_poweron_tz", "pins_poweroff_tz";
-			pinctrl-0 = <&btp_irq_sleep &btp_ldo>;
+			pinctrl-0 = <&btp_irq_sleep &btp_ldo &btp_rst>;
 			pinctrl-1 = <&btp_irq &spi1_clk &spi1_cs &spi1_miso &spi1_mosi>;
 			pinctrl-2 = <&btp_irq_sleep &spi1_bus_inactive &spi1_miso_inactive>;
 			pinctrl-3 = <&btp_irq>;
@@ -106,10 +114,11 @@
 			gpio-controller;
 			#gpio-cells = <2>;
 
-			etspi-sleepPin = <&expander_gpios 6 0>;
+			etspi-sleepPin = <&gph1 1 0>;
 			etspi-drdyPin = <&gpa1 3 0x00>;
 			etspi-ldoPin = <&gpm43 0 0x00>;
 			etspi-chipid = "ET510";
+			etspi-orient = <0>;
 
 			controller-data {
 				cs-gpio = <&gpp0 3 0>;
