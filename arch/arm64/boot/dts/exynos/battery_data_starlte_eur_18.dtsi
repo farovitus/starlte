@@ -12,4 +12,41 @@
 #include "battery_data_starlte_common.dtsi"
 
 / {
+	battery {
+		battery,swelling_low_temp_current = <950>;	/* 0.3C */
+		battery,swelling_high_temp_current = <1400>;	/* 0.45C */
+		battery,swelling_wc_high_temp_current = <950>;	/* 0.3C */
+		battery,swelling_wc_low_temp_current = <950>;	/* 0.3C */
+
+		battery,max_charging_current = <2250>;
+		battery,battery_full_capacity = <3000>;
+
+		battery,standard_curr = <2850>;
+		battery,expired_time = <10800>;
+		battery,recharging_expired_time = <5400>;
+	};
+
+	max77705-fuelgauge {
+		fuelgauge,v_empty = <0xA7E2>; /* Empty: 3350mV, Recover: 3480mV */
+		fuelgauge,capacity = <0x0AEE>;
+	};
+
+	cable-info {
+		current_group_4 {
+			cable_number = <6 7 8>;
+			input_current = <1650>;
+			charging_current = <2850>;
+		};
+		current_group_6 {
+			cable_number = <10 12 14 15 27>;
+			input_current = <900>;
+			charging_current = <1600>;
+		};
+		current_group_10 {
+			cable_number = <11 16 28>;
+			input_current = <750>;
+			charging_current = <1600>;
+		};
+
+	};
 };

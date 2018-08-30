@@ -12,12 +12,12 @@
 #include "exynos9810-rmem.dtsi"
 #include "exynos9810-rmem_star2.dtsi"
 #include "exynos9810.dtsi"
-#include "exynos9810-display-lcd.dtsi"
+#include "exynos9810-display-lcd_star2lte.dtsi"
 #include "modem-ss360ap-sipc-pdata.dtsi"
 #include "exynos9810-star2lte_svcled.dtsi"
 #include "exynos9810-star2lte_motor.dtsi"
 #include "exynos9810-starlte_sound.dtsi"
-#include "exynos9810-starlte-input-common.dtsi"
+#include "exynos9810-star2lte-input-common.dtsi"
 
 / {
 	model = "Samsung UNIVERSAL9810 board based on EXYNOS9810";
@@ -26,21 +26,6 @@
 	ect {
 		parameter_address = <0xA0000000>;
 		parameter_size = <0x32000>;
-	};
-
-	memory@80000000 {
-		device_type = "memory";
-		reg = <0x0 0x80000000 0x80000000>;
-	};
-
-	memory@880000000 {
-		device_type = "memory";
-		reg = <0x00000008 0x80000000 0x80000000>;
-	};
-
-	memory@900000000 {
-		device_type = "memory";
-		reg = <0x00000009 0x00000000 0x0>;
 	};
 
 	chosen {
@@ -536,7 +521,7 @@
 			/* range of smpl_warn_vth */
 			/* 0x00 : 2.1V, 0x20 : 2.3V, 0x40 : 2.5V, 0x60 : 2.7V 0x80 : 2.9V */
 			/* 0xA0 : 3.1V, 0xC0 : 3.3V, 0xE0 : 3.5V */
-			smpl_warn_vth = <0x80>;
+			smpl_warn_vth = <0xA0>;
 			/* LowBat_Hys[4:3] 00(100mV), 01(200mV), 10(300mV), 11(400mV) */
 			smpl_warn_hys = <0x00>;
 			adc_mode = <2>; /* 0 : disable, 1 : current meter, 2 : power meter */
@@ -2282,7 +2267,7 @@
 
 	panel_0: panel_drv@001 {
 		compatible = "samsung,panel-drv";
-		ddi_info = <&s6e3ha8_star2>;
+		ddi_info = <&s6e3ha8_crown>;
 		gpio,lcd-reset = <&gpa3 4 0x1>;
 		gpio,disp-det = <&gpg2 2 0x0>;
 
@@ -2300,20 +2285,18 @@
 		};
 
 		panel-lookup {
-			panel-name = "s6e3ha8_star2_a3_s0_default", "s6e3ha8_star2_a3_s0_metal";
+			panel-name = "s6e3ha8_crown_a3_s0_preliminary", "s6e3ha8_crown_a3_s0_default";
 			panel-lut = <
-				/* A3 */
-				0x000003 0x40003F 0x0   /* A3 && EVT0 && Rev.[H-Q] */
-				0x000013 0x40003F 0x1   /* A3 && EVT1 && Rev.[H-Q] */
-				0x000000 0x400000 0x0   /* A3 */
+				0x000000 0x00000F 0x0   /* AID Dimming */
+				0x000001 0x00000F 0x0   /* AID Dimming */
+				0x000002 0x00000F 0x0   /* AID Dimming */
+				0x000003 0x00000F 0x0   /* AID Dimming */
 
-				/* A4 */
-				0x400003 0x40003F 0x0   /* A4 && EVT0 && Rev.[H-Q] */
-				0x400013 0x40003F 0x1   /* A4 && EVT1 && Rev.[H-Q] */
-				0x400000 0x400000 0x0   /* A4 */
+				0x000004 0x00000F 0x1   /* GAMMA FLASH */
+				0x000005 0x00000F 0x1   /* GAMMA FLASH */
 
 				/* default panel */
-				0x000000 0x000000 0x0   /* not found */
+				0x000000 0x000000 0x1   /* not found */
 			>;
 		};
 	};

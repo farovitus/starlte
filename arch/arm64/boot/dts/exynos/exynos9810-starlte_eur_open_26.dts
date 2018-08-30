@@ -108,6 +108,8 @@
 			hrmsensor,hrm_boost_en-gpio = <&gpg1 6 0>;
 			hrmsensor,vdd_1p8 = "HRM_1.8V_AP";
 			hrmsensor,i2c_1p8 = "VDD_NFC_1P8";
+			hrmsensor,thd = <100000 100000>;
+			hrmsensor,init_curr = <0x46 0x41 0x28 0x3c>;
 		};
 	};
 
@@ -212,49 +214,6 @@
 
 		gpios = <&gpg0 2 0x0>;
 		status = "okay";
-	};
-
-	pinctrl@14050000 {
-		grip_irq: grip-irq {
-			samsung,pins = "gpa3-0";
-			samsung,pin-function = <0xf>;
-			samsung,pin-pud = <0>;
-			samsung,pin-drv = <3>;
-		};
-	};
-
-	hsi2c_11: hsi2c@104C0000 {
-		status = "okay";
-		sx9320-i2c@22 {
-			compatible = "sx9320";
-			reg = <0x28>;
-			status = "okay";
-			pinctrl-names = "default";
-			pinctrl-0 = <&grip_irq>;
-			interrupt-parent = <&gpa3>;
-			interrupts = <0 0 0>;
-
-			/* only phase 3 enable */
-			sx9320,phen = <0x03>;
-			sx9320,nirq-gpio = <&gpa3 0 0x00>;
-			sx9320,gain = <0x01>;
-			sx9320,again = <0x08>;
-			sx9320,scan_period = <0x16>;
-			sx9320,range = <0x00>;
-			sx9320,sampling_freq = <0x00>;
-			sx9320,resolution = <0x07>;
-			sx9320,rawfilt = <0x01>;
-			sx9320,hyst = <0x01>;
-			sx9320,avgposfilt = <0x04>;
-			sx9320,avgnegfilt = <0x01>;
-			sx9320,avgthresh = <0x20>;
-			sx9320,debouncer = <0x01>;
-			sx9320,normal_thd = <0x20>;
-			sx9320,afeph0 = <0x0>;
-			sx9320,afeph1 = <0x0>;
-			sx9320,afeph2 = <0x0>;
-			sx9320,afeph3 = <0x4>;
-		};
 	};
 
 	speedy@141C0000 {

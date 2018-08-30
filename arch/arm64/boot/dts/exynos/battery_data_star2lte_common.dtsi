@@ -314,7 +314,7 @@
 		fuelgauge,using_temp_compensation;
 		fuelgauge,low_temp_limit = <100>;
 		fuelgauge,using_hw_vempty;
-		fuelgauge,v_empty = <0xA7E2>; /* Empty: 3260mV, Recover: 3480mV */
+		fuelgauge,v_empty = <0xA05F>; /* Empty: 3260mV, Recover: 3480mV */
 		fuelgauge,v_empty_origin = <0x7D54>; /* Empty: 2500mV, Recover: 3360mV */
 		fuelgauge,sw_v_empty_voltage = <3200>;
 		fuelgauge,sw_v_empty_voltage_cisd = <3100>;
@@ -458,7 +458,7 @@
  *  31	SMART_OTG,
  *  32	SMART_NOTG,
  *  33	CABLE_MAX,
- */
+*/
 	cable-info {
 		default_input_current = <1800>;
 		default_charging_current = <2100>;

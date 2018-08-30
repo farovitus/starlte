@@ -116,26 +116,22 @@
 
 		PIN_IN(gpg2-3, DOWN);	/* IRIS_RST_N */
 	};
-	sleep6:sleep-state {
-		PIN_SLP(gpp0-0, OUT0, NONE);	/* BTP_SPI_CLK */
-		PIN_SLP(gpp0-1, OUT0, NONE);	/* BTP_SPI_MOSI */
-		PIN_SLP(gpp0-2, INPUT, DOWN);	/* BTP_SPI_MISO */
-		PIN_SLP(gpp0-3, OUT0, NONE);	/* BTP_SPI_CS_N */
+	sleep6: sleep-state {
+		PIN_SLP(gpg0-0, INPUT, UP);	/* IFC_SENSE_INT_AP */
+		PIN_SLP(gpg0-4, INPUT, UP);	/* USB3.1_CON_SEL */
+		PIN_SLP(gpg0-5, PREV, NONE);	/* WLAN_EN */
+		PIN_SLP(gpg0-6, INPUT, DOWN);	/* NC */
 
 		PIN_SLP(gpp1-4, PREV, NONE);	/* TSP_SCL_1P8 */
 		PIN_SLP(gpp1-5, PREV, NONE);	/* TSP_SDA_1P8 */
 		PIN_SLP(gpp1-6, INPUT, NONE);	/* GRIP_SCL_1P8 */
 		PIN_SLP(gpp1-7, INPUT, NONE);	/* GRIP_SDA_1P8 */
 
+		PIN_SLP(gpg2-2, PREV, NONE);	/* DISP_DET */
 		PIN_SLP(gpp2-4, INPUT, NONE);	/* MEM_SCL_1P8 */
 		PIN_SLP(gpp2-5, INPUT, NONE);	/* MEM_SDA_1P8 */
 		PIN_SLP(gpp2-6, INPUT, DOWN);	/* NC */
 		PIN_SLP(gpp2-7, INPUT, DOWN);	/* NC */
-
-		PIN_SLP(gpg0-0, INPUT, UP);	/* IFC_SENSE_INT_AP */
-		PIN_SLP(gpg0-4, INPUT, UP);	/* USB3.1_CON_SEL */
-		PIN_SLP(gpg0-5, PREV, NONE);	/* WLAN_EN */
-		PIN_SLP(gpg0-6, INPUT, DOWN);	/* NC */
 
 		PIN_SLP(gpg0-3, INPUT, NONE);	/* SMPL_WARN_AP */
 
@@ -146,7 +142,6 @@
 		PIN_SLP(gpg1-5, INPUT, NONE);	/* HW_REV0 */
 
 		PIN_SLP(gpg2-1, INPUT, NONE);	/* SUB_PMIC_IRQ_N */
-		PIN_SLP(gpg2-2, PREV, NONE);	/* DISP_DET */
 		PIN_SLP(gpg2-4, PREV, DOWN);	/* CAM_TORCH_EN */
 		PIN_SLP(gpg2-6, OUT0, DOWN);	/* CAM_RST_N */
 		PIN_SLP(gpg2-7, INPUT, DOWN);	/* NC */

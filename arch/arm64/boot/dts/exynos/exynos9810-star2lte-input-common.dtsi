@@ -99,15 +99,6 @@
 					regulator-ramp-delay = <12000>;
 					regulator-initial-mode = <3>;
 				};
-
-				ldo32_reg: LDO32 {
-					regulator-name = "vdd_ldo32";
-					regulator-min-microvolt = <1800000>;
-					regulator-max-microvolt = <3375000>;
-					regulator-always-on;
-					regulator-ramp-delay = <12000>;
-					regulator-initial-mode = <2>;
-				};
 			};
 		};
 	};
@@ -116,7 +107,7 @@
 		status = "okay";
 		samsung,reset-before-trans;
 		samsung,stop-after-trans;	/* LSI IC ONLY */
-		samsung,no-dev-restart;		/* LSI IC ONLY */
+//		samsung,no-dev-restart;		/* ONLY for LSI IC Y761 : LP & Nack */
 		touchscreen@48 {
 			compatible = "sec,sec_ts";
 			reg = <0x48>;
@@ -124,9 +115,12 @@
 			pinctrl-0 = <&attn_irq>;
 			pinctrl-1 = <&attn_input>;
 			pressure-sensor = "Y";
+			sync-reportrate-120 = "Y";
+			sec,force_sensor_ch_gpio = <&expander_gpios 21 0>;	/* L:1ch, H:2ch */
 			sec,irq_gpio = <&gpa1 0 0>;
 			sec,irq_type = <8200>;
 			sec,max_coords = <4096 4096>;
+			sec,area-size = <133 266 341>; /* indicator: 24dp navigator:48dp edge:60px dpi=320 */
 			sec,mis_cal_check = <1>;
 			sec,regulator_dvdd = "tsp_io";
 			sec,regulator_avdd = "tsp_avdd";
@@ -134,9 +128,10 @@
 			//sec,always_lpmode = <1>;
 			sec,tclm_level = <2>;
 			sec,afe_base = <0x09>;
-			sec,project_name = "Star1", "G960";
-			sec,firmware_name = "tsp_sec/y761_star1.fw", "tsp_sec/y761_star1.fw";
+			sec,project_name = "Star2", "G965";
+			sec,firmware_name = "tsp_sec/y761_star2.fw", "tsp_sec/y761_star2.fw";
 			support_dex_mode;
+			sec,factory_item_version = <2>;
 		};
 	};
 
