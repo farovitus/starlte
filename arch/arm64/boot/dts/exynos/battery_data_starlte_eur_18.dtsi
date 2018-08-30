@@ -27,7 +27,7 @@
 	};
 
 	max77705-fuelgauge {
-		fuelgauge,v_empty = <0xA7E2>; /* Empty: 3350mV, Recover: 3480mV */
+		fuelgauge,v_empty = <0xA05F>; /* Empty: 3350mV, Recover: 3480mV */
 		fuelgauge,capacity = <0x0AEE>;
 	};
 
