@@ -189,24 +189,6 @@
 		pinctrl-0 = <&dp_irq>;
 	};
 
-	usb@10C00000 {
-		status = "okay";
-		dwc3 {
-			dr_mode = "otg";
-			maximum-speed = "super-speed";
-			snps,quirk-frame-length-adjustment = <0x20>;
-			snps,u1u2_exitfail_quirk;
-			/*
-			 * dis-u2-freeclk-exists-quirk, dis_u2_susphy_quirk are alternative.
-			 * One of them should be selected
-			 */
-			snps,dis-u2-freeclk-exists-quirk;
-			/* snps,dis_u2_susphy_quirk;*/
-			/* definition for manual control of ldo 12, 13, 14 */
-			ldo_manual_control;
-		};
-	};
-
 	phy@11100000 {
 		status = "okay";
 
