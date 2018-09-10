@@ -10,12 +10,12 @@
 */
 
 #include "exynos9810-rmem.dtsi"
-#include "exynos9810-rmem_star2.dtsi"
+#include "exynos9810-rmem_crown.dtsi"
 #include "exynos9810.dtsi"
 #include "exynos9810-display-lcd_star2lte.dtsi"
 #include "modem-ss360ap-sipc-pdata.dtsi"
-#include "exynos9810-star2lte_svcled.dtsi"
-#include "exynos9810-star2lte_motor.dtsi"
+#include "exynos9810-crownlte_svcled.dtsi"
+#include "exynos9810-crownlte_motor.dtsi"
 #include "exynos9810-starlte_sound.dtsi"
 #include "exynos9810-star2lte-input-common.dtsi"
 

@@ -178,6 +178,8 @@
 	sleep7:sleep-state {
 		PIN_SLP(gpp5-0, INPUT, NONE);	/* NFC_HRM_SCL_1P8 */
 		PIN_SLP(gpp5-1, INPUT, NONE);	/* NFC_HRM_SDA_1P8 */
+		PIN_SLP(gpp5-6, PREV, NONE);	/* SPEN_SDA_1P8 */
+		PIN_SLP(gpp5-7, PREV, NONE);	/* SPEN_SCL_1P8 */
 
 		PIN_SLP(gpp6-0, INPUT, NONE);	/* SUB_PMIC_SCL_1P8 */
 		PIN_SLP(gpp6-1, INPUT, NONE);	/* SUB_PMIC_SDA_1P8 */
