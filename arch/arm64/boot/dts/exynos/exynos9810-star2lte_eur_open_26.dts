@@ -174,8 +174,8 @@
 			ssp-mcu-resp = <&gph0 4 0x00>;
 			ssp-batch-wake-irq = <&gpa0 5 0x00>;
 			ssp-shub-int = <&gpa4 0 0x00>;
-			ssp-acc-position = <6>;
-			ssp-mag-position = <6>;
+			ssp-acc-position = <7>;
+			ssp-mag-position = <5>;
 			ssp-sns-combination = <0>;
 			ssp-ap-rev = <1>;
 			ssp-mag-array = /bits/ 8 <31 85 85 55 73 174 0 176 215 55 227 67 5 63 1 138 244 26 20 97
