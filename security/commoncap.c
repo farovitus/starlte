@@ -35,6 +35,10 @@
 #include <linux/android_aid.h>
 #endif
 
+#ifdef CONFIG_LOD_SEC
+#include <linux/linux_on_dex.h>
+#endif
+
 /*
  * If a non-root user executes a setuid-root binary in
  * !secure(SECURE_NOROOT) mode, then we raise capabilities.
@@ -90,7 +94,7 @@ int __cap_capable(const struct cred *cred, struct user_namespace *targ_ns,
 		if (ns == &init_user_ns)
 			return -EPERM;
 
-		/* 
+		/*
 		 * The owner of the user namespace in the parent of the
 		 * user namespace has all caps.
 		 */
@@ -126,7 +130,26 @@ int cap_capable(const struct cred *cred, struct user_namespace *targ_ns,
 		return 0;
 	}
 #endif
-	return ret;
+
+/*
+ * Check the LoD capabilities
+ * If no cap, return EPERM immediately, skipping following checks
+ * If has cap, continue namespace check
+ */
+#ifdef CONFIG_LOD_SEC
+	if (cred_is_LOD(cred)) {
+		if (cap_raised(CAP_LOD_SET, cap) == 0){
+#ifndef CONFIG_SAMSUNG_PRODUCT_SHIP
+			if (cap != 21) //ignore 21 avoid flooding
+				printk(KERN_ERR "LOD cap_capable: blocking CAP %d PROC %s "
+					"PID %d UID %d\n", cap, current->comm, current->pid,
+					cred->uid.val);
+#endif
+			return -EPERM;
+		}
+	}
+#endif
+return ret;
 }
 /**
  * cap_settime - Determine whether the current process may set the system clock
