@@ -37,4 +37,7 @@ else
 KBUILD_CFLAGS += $(call cc-option, -D__ANDROID__ -Wno-error)
 
 endif
+
+CFLAGS_KASAN_NOSANITIZE := -fno-builtin
+
 endif
