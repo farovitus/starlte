@@ -1080,35 +1080,32 @@
 
 	udc: usb@10C00000 {
 		compatible = "samsung,exynos-dwusb";
-		clocks = <0x1a 0x2c0 0x1a 0x2c7>;
+		clocks = <&clock GATE_USB30DRD_USB30DRD_LINK>, <&clock USB30DRD>;
 		clock-names = "aclk", "sclk";
-		reg = <0x0 0x10c00000 0x10000>;
-		#address-cells = <0x2>;
-		#size-cells = <0x1>;
+		reg = <0x0 0x10C00000 0x10000>;
+		#address-cells = <2>;
+		#size-cells = <1>;
 		ranges;
-		status = "okay";
+		status = "disabled";
 
-		dwc3 {
+		usbdrd_dwc3: dwc3 {
 			compatible = "synopsys,dwc3";
-			reg = <0x0 0x10c00000 0x10000>;
-			interrupts = <0x0 0xf4 0x0>;
-			tx-fifo-resize = <0x0>;
-			adj-sof-accuracy = <0x0>;
-			is_not_vbus_pad = <0x1>;
-			enable_sprs_transfer = <0x1>;
-			phys = <0x53 0x0 0x53 0x1>;
+			reg = <0x0 0x10C00000 0x10000>;
+			interrupts = <0 INTREQ__USB30DRD_Interrupt_00 0>;
+			tx-fifo-resize = <0>;
+			adj-sof-accuracy = <0>;
+			is_not_vbus_pad = <1>;
+			enable_sprs_transfer = <1>;
+			phys = <&usbdrd_phy0 0>, <&usbdrd_phy0 1>;
 			phy-names = "usb2-phy", "usb3-phy";
-			xhci_l2_support = <0x1>;
-			usb_audio_offloading = <0x1>;
-			abox = <0x54>;
-			ldos = <0x6>;
-			ldo_number = <0x9 0xa 0xb 0xc 0xd 0xe>;
-			dr_mode = "otg";
-			maximum-speed = "super-speed";
-			snps,quirk-frame-length-adjustment = <0x20>;
-			snps,u1u2_exitfail_quirk;
-			snps,dis-u2-freeclk-exists-quirk;
-			ldo_manual_control;
+			/* check susphy support */
+			xhci_l2_support = <1>;
+			/* support usb audio offloading: 1, if not: 0 */
+			usb_audio_offloading = <1>;
+			abox = <&abox>;
+			/* support USB L2 sleep */
+			ldos = <6>;
+			ldo_number = <9 10 11 12 13 14>;
 		};
 	};
 
