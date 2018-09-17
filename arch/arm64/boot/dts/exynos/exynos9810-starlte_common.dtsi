@@ -12,7 +12,7 @@
 #include "exynos9810-rmem.dtsi"
 #include "exynos9810-rmem_crown.dtsi"
 #include "exynos9810.dtsi"
-#include "exynos9810-display-lcd_starlte.dtsi"
+#include "exynos9810-display-lcd.dtsi"
 #include "modem-ss360ap-sipc-pdata.dtsi"
 #include "exynos9810-crownlte_svcled.dtsi"
 #include "exynos9810-crownlte_motor.dtsi"
@@ -2169,7 +2169,7 @@
 
 	panel_0: panel_drv@001 {
 		compatible = "samsung,panel-drv";
-		ddi_info = <&s6e3ha8_crown>;
+		ddi_info = <&s6e3ha8_star>;
 		gpio,lcd-reset = <&gpa3 4 0x1>;
 		gpio,disp-det = <&gpg2 2 0x0>;
 
@@ -2187,18 +2187,14 @@
 		};
 
 		panel-lookup {
-			panel-name = "s6e3ha8_crown_a3_s0_preliminary", "s6e3ha8_crown_a3_s0_default";
+			panel-name = "s6e3ha8_star_a3_s0_default", "s6e3ha8_star_a3_s0_metal", "s6e3ha8_star_a3_s1_default";
 			panel-lut = <
-				0x000000 0x00000F 0x0   /* AID Dimming */
-				0x000001 0x00000F 0x0   /* AID Dimming */
-				0x000002 0x00000F 0x0   /* AID Dimming */
-				0x000003 0x00000F 0x0   /* AID Dimming */
-
-				0x000004 0x00000F 0x1   /* GAMMA FLASH */
-				0x000005 0x00000F 0x1   /* GAMMA FLASH */
+				0x000004 0x00003F 0x2   /* EVT0 && Rev.R */
+				0x000003 0x00003F 0x0   /* EVT0 && Rev.[H-Q] */
+				0x000013 0x00003F 0x1   /* EVT1 && Rev.[H-Q] */
 
 				/* default panel */
-				0x000000 0x000000 0x1   /* not found */
+				0x000000 0x000000 0x0   /* not found */
 			>;
 		};
 	};
