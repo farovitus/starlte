@@ -107,7 +107,7 @@
 		status = "okay";
 		samsung,reset-before-trans;
 		samsung,stop-after-trans;	/* LSI IC ONLY */
-//		samsung,no-dev-restart;		/* ONLY for LSI IC Y761 : LP & Nack */
+		samsung,no-dev-restart;		/* LSI IC ONLY */
 		touchscreen@48 {
 			compatible = "sec,sec_ts";
 			reg = <0x48>;
@@ -115,12 +115,9 @@
 			pinctrl-0 = <&attn_irq>;
 			pinctrl-1 = <&attn_input>;
 			pressure-sensor = "Y";
-			sync-reportrate-120 = "Y";
-			sec,force_sensor_ch_gpio = <&expander_gpios 21 0>;	/* L:1ch, H:2ch */
 			sec,irq_gpio = <&gpa1 0 0>;
 			sec,irq_type = <8200>;
 			sec,max_coords = <4096 4096>;
-			sec,area-size = <133 266 341>; /* indicator: 24dp navigator:48dp edge:60px dpi=320 */
 			sec,mis_cal_check = <1>;
 			sec,regulator_dvdd = "tsp_io";
 			sec,regulator_avdd = "tsp_avdd";
