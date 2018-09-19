@@ -2747,10 +2747,7 @@ config COMPAT_FOR_U64_ALIGNMENT
 config SYSVIPC_COMPAT
 	def_bool y
 	depends on SYSVIPC
-<<<<<<< HEAD
-=======
 endif
->>>>>>> b4b8cc32b6df1cbc9ed1aa63e294cdbec5a2f186
 
 endmenu
 
