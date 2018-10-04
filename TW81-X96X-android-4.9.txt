@@ -1,0 +1,18 @@
+# Infos about this branch and source.
+# This is the last branch i was working on for N9PORT roms which are based on 8.1
+# It's not related to NK in anyway. If i recall right it doesn't have any tweaks or commits imported from NK but you can always make sure by going back a little bit through commits history.
+
+# Features:
+- Based on crownlte ELS repo    source: https://github.com/exynos-linux-stable/crownlte
+- Merged android-4.9
+- Support S9/S9+ & N9
+- EAS upstreamed
+
+
+# BUGS:
+- Reboot function broken  (Check & read commit message https://github.com/farovitus/starlte/commit/36928c36feaec2932ea47d57ca3f41deae8765ae )
+
+
+# Notes:
+**All the remaining work should be related to dts only.
+**Not tested on S9.
