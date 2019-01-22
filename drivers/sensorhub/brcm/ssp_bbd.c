@@ -163,7 +163,7 @@ int bbd_do_transfer(struct ssp_data *data, struct ssp_msg *msg,
 			bcm4773_debug_info();
 
 			status = -2;
-                        
+
 			mutex_lock(&data->pending_mutex);
 			if (!use_no_irq && !msg_dead) {
 				if ((msg->list.next != NULL) &&
@@ -298,13 +298,13 @@ int callback_bbd_on_mcu_ready(void *ssh_data, bool ready)
  void makeResetInfoString(char *src, char *dst)
 {
         int i, idx = 0, totalLen = (int)strlen(src);
-        
+
         for(i = 0; i < totalLen; i++) {
-            if(src[i] == '"' || src[i] == '<' || src[i] == '>')
-                continue;
-            if(src[i] == ';')
-                break;
-                dst[idx++] = src[i];
+					if(src[i] == '"' || src[i] == '<' || src[i] == '>')
+						continue;
+					if(src[i] == ';')
+						break;
+					dst[idx++] = src[i];
         }
 }
 int callback_bbd_on_control(void *ssh_data, const char *str_ctrl)
@@ -322,11 +322,11 @@ int callback_bbd_on_control(void *ssh_data, const char *str_ctrl)
 	} else if (strstr(str_ctrl, BBD_CTRL_LHD_STOP)) {
 		int prefixLen = (int)strlen(BBD_CTRL_LHD_STOP) + 1; //puls one is for blank ex) "LHD:STOP "
 		int totalLen = (int)strlen(str_ctrl);
-		
+
 		memcpy(data->resetInfo, str_ctrl + prefixLen, totalLen - prefixLen);
-		
+
 			if(totalLen != prefixLen) {
-					
+
 					/* this value is used on debug work func */
 					memset(data->resetInfoDebug, 0, sizeof(data->resetInfoDebug));
 					makeResetInfoString(data->resetInfo, data->resetInfoDebug);
@@ -351,8 +351,9 @@ int callback_bbd_on_mcu_reset(void *ssh_data, bool IsNoResp)
 
 	if (!data)
 		return -1;
-        if(IsNoResp && !data->resetting)
-            data->IsNoRespCnt++;
+
+	if (IsNoResp && !data->resetting)
+			data->IsNoRespCnt++;
 
 	data->resetting = true;
 	//data->uResetCnt++;
