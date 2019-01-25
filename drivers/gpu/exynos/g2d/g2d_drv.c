@@ -768,7 +768,7 @@ static int g2d_probe(struct platform_device *pdev)
 {
 	struct g2d_device *g2d_dev;
 	struct resource *res;
-	__u32 version = 0;
+	__u32 version;
 	int ret;
 
 	g2d_dev = devm_kzalloc(&pdev->dev, sizeof(*g2d_dev), GFP_KERNEL);

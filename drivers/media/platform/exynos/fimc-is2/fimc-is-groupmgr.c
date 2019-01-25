@@ -541,7 +541,7 @@ void fimc_is_group_unlock(struct fimc_is_group *group, unsigned long flags,
 		bool leader_lock)
 {
 	u32 entry;
-	struct fimc_is_framemgr *ldr_framemgr = NULL;
+	struct fimc_is_framemgr *ldr_framemgr;
 
 	FIMC_BUG_VOID(!group);
 

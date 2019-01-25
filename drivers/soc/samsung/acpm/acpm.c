@@ -98,7 +98,7 @@ static int plugins_init(void)
 	unsigned int plugin_id;
 	char name[50];
 	const char *fw_name = NULL;
-	void __iomem *fw_base_addr = NULL;
+	void __iomem *fw_base_addr;
 	struct device_node *node, *child;
 	const __be32 *prop;
 	unsigned int offset;

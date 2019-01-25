@@ -156,7 +156,7 @@ static int tcf_mirred(struct sk_buff *skb, const struct tc_action *a,
 	struct tcf_mirred *m = to_mirred(a);
 	struct net_device *dev;
 	struct sk_buff *skb2;
-	int retval, err = 0;
+	int retval, err;
 	u32 at;
 
 	tcf_lastuse_update(&m->tcf_tm);
